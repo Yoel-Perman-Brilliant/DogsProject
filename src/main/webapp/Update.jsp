@@ -1,0 +1,269 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    <%@page import="db.ForDataBase" %>
+<jsp:useBean id="dogs" class="db.ForDataBase"/>
+<!DOCTYPE html>
+<html>
+<head>
+    <script language="JavaScript">
+        function validate() {
+            var email = document.form.email.value;
+            var password = document.form.password.value;
+            var repeatPassword = document.form.repeatPassword.value;
+            var hebrew = "???????????????????????????";
+            var number = "0123456789";
+            var english = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            var chars = "`;:?,'~!#$%^&*(){}<>|\/ ";
+
+            //Verifies that a username has been provided
+            if (document.form.username.value == "") {
+                alert("Please enter a username");
+                document.form.username.focus();
+                document.form.username.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that the username at least 3 characters long
+            if (document.form.username.value.length < 3) {
+                alert("Username should be at least three characters long");
+                document.form.username.focus();
+                document.form.username.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that the username only contains valid characters
+            for (i = 0; i < chars.length; i++) {
+                var t = chars.charAt(i);
+                if (document.form.username.value.indexOf(t) > -1) {
+                    alert("Username contains an invalid character");
+                    document.form.username.focus()
+                    document.form.username.style.backgroundColor = "red";
+                    return false;
+                }
+            }
+
+            //Verifies that a password has been provided
+            if (document.form.password.value == "") {
+                alert("Please enter a password")
+                document.form.password.focus();
+                document.form.password.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that the password at least 6 characters long
+            if (document.form.password.value.length < 6) {
+                alert("Password should be at least 6 letters long");
+                document.form.password.focus();
+                document.form.password.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that the password has been repeated
+            if (document.form.repeatPassword.value == "") {
+                alert("Please repeat the password");
+                document.form.repeatPassword.focus();
+                document.form.repeatPassword.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that both passwords provided are equal
+            if (document.form.password.value != document.form.repeatPassword.value) {
+                alert("Passwords do not match");
+                document.form.repeatPassword.focus();
+                document.form.repeatPassword.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that an email address has been provided
+            if (document.form.email.value == "") {
+                alert("Please enter an email address");
+                document.form.email.focus();
+                document.form.email.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that the email includes @ in a valid location
+            if (document.form.email.value.indexOf("@") < 1) {
+                alert("@ wasn't typed in the email address, or it is in the wrong location");
+                document.form.email.focus();
+                document.form.email.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that there is only one @ in the email address
+            if (document.form.email.value.indexOf("@") != document.form.email.value.lastIndexOf("@")) {
+                alert("More than one @ was typed");
+                document.form.email.focus();
+                document.form.email.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that the email address only contains valid characters
+            for (i = 0; i < chars.length; i++) {
+                var a = chars.charAt(i);
+                if (document.form.email.value.indexOf(a) > -1) {
+                    alert("Email address cannot contain invalid or hebrew characters");
+                    document.form.email.focus();
+                    document.form.email.style.backgroundColor = "red";
+                    return false;
+                }
+            }
+
+            //Verifies that the email address does not contain hebrew characters
+            for (i = 0; i < hebrew.length; i++) {
+                var a = hebrew.charAt(i);
+                if (document.form.email.value.indexOf(a) > -1) {
+                    alert("Email address cannot contain invalid or hebrew characters");
+                    document.form.email.focus();
+                    document.form.email.style.backgroundColor = "red";
+                    return false;
+                }
+            }
+
+            //Verifies that there is a period at least three characters after the @ in the email address, and that the
+            //first period is at least three characters after the @.
+            var a = document.form.email.value.split("@");
+            if ((a[1]).indexOf(".") < 3) {
+                alert("Either there is no period after the @, or it is in the wrong place");
+                document.form.email.focus();
+                document.form.email.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that there are at most 2 periods after the @ in the email address.
+            var b = a[1].split(".");
+            if (b.length > 3) {
+                alert("There a more than two periods after the @");
+                document.form.email.focus();
+                document.form.email.style.backgroundColor = "red";
+                return false;
+            }
+
+            //Verifies that if there are two periods, they are at least two characters apart.
+            if (b.length == 2 && b[1].length < 2) {
+                alert("The space between the periods after the @ is invalid");
+                document.form.email.focus();
+                document.form.email.style.backgroundColor = "red";
+                return false;
+            }
+            return true;
+        }
+    </script>
+<meta charset="ISO-8859-1">
+<title>Update Account Details</title>
+</head>
+<body bgcolor="D6AC91" style="margin-left: 200px; margin-right: 200px;">
+<font face="calibri">
+    <jsp:include page="Menu.jsp"></jsp:include>
+        <% if (session.getAttribute("status") == null || (session.getAttribute("status") != null
+    && session.getAttribute("status").equals("guest"))) { %>
+
+    <h3> Can't update your information if you ain't signed in </h3>
+
+    <% } else if (session.getAttribute("status") != null && (session.getAttribute("status").equals("member") ||
+    session.getAttribute("status").equals("admin"))) { %>
+    <center>
+        <font face="Calibri">
+            <form name="form" method="POST" action="Update.jsp" onsubmit="return validate();">
+                <table>
+                    <tr>
+                        <td>
+                            Username:
+                        </td>
+                        <td>
+                            <% out.print(
+                            "<input type=\"text\" name=\"username\" value=\""+session.getAttribute("user")+"\">");
+                            %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Password:
+                        </td>
+                        <td>
+                            <% out.print(
+                                    "<input type=\"password\" name=\"password\" value=\""+session.getAttribute("password")+"\">");
+                            %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Repeat password:
+                        </td>
+                        <td>
+                            <% out.print(
+                                    "<input type=\"password\" name=\"repeatPassword\" value=\""+session.getAttribute("password")+"\">");
+                            %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Email:
+                        </td>
+                        <td>
+                            <% out.print(
+                                    "<input type=\"email\" name=\"email\" value=\""+session.getAttribute("email")+"\">");
+                            %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="reset" name="reset" value="clear form">
+                            <input type="submit" name="submit" value="update">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <%
+                if (request.getMethod().equals("POST")) {
+                    //Saves the form entries as variables and updates the table "users' in the database "dogs"
+                    String currentUsername = (String)session.getAttribute("user");
+                    String username = request.getParameter("username");
+                    String password = request.getParameter("password");
+                    String email = request.getParameter("email");
+                    dogs.insertUpdateDelete(
+                            "update users set username=\""+username+"\", password=\""+password+"\", email=\""+email+"\" where username=\"" +
+                    currentUsername+"\";");
+                    //Sets the session attributes to the new acctount details.
+                    session.setAttribute("user", username);
+                    session.setAttribute("password", password);
+                    session.setAttribute("email", email);
+                }
+
+            %>
+
+            <table>
+                <tr>
+                    <th>
+                        Username
+                    </th>
+                    <th>
+                        Password
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                </tr>
+                <%
+                    //Gets the user's row in the table "users" as a 2d array and prints it, so the user can see that the
+                    //update has worked.
+                    String [][] result = dogs.select("select username, password, email from " +
+                            "users where username='"+session.getAttribute("user")+"' and password='"+session.getAttribute("password")+"'");
+                    int j,i;
+                    for(i=0;i<result.length;i++)
+                    {
+
+                        out.println("<tr>");
+                        for(j=0;j<result[i].length;j++)
+                        {
+
+                            out.println("<td>"+result[i][j]+"</td>");
+                        }
+                        out.println("</tr>");
+                    }
+                %>
+            </table>
+        </font>
+<% } %>
+</body>
+</html>
