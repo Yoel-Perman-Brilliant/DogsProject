@@ -5,7 +5,7 @@
 <jsp:useBean id="dogs" class="db.ForDataBase"/>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1255">
+<meta charset="ISO-8859-1">
     <title>Log in</title>
 
     <script>

@@ -10,7 +10,7 @@
             var email = document.form.email.value;
             var password = document.form.password.value;
             var repeatPassword = document.form.repeatPassword.value;
-            var hebrew = "???????????????????????????";
+            var hebrew = "אבגדהוזחטיכלמנסעפצקרשת";
             var number = "0123456789";
             var english = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             var chars = "`;:?,'~!#$%^&*(){}<>|\/ ";
